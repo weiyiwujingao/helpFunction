@@ -64,3 +64,44 @@ function curl_get($url, $timeout = '30') {
 
     return $responseText;
 }
+
+/**
+ * CURL请求
+ *
+ * @param string  $url     请求地址
+ * @param array   $data    请求数据 key=>value 键值对
+ * @param integer $timeout 超时时间,单位秒
+ * @param integer $ishttp  是否使用https连接 0:否 1:是
+ * @return array
+ */
+function curl_post($strUrl, $arrData=array(), $boolUseCookie=false){
+    $strData = array();
+    foreach ($arrData as $k => $v) {
+        $strData[] = "$k=$v";
+    }
+    $strData = $strData ? implode('&', $strData) : '';
+    $ch = curl_init($strUrl);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $strData);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_MAXREDIRS, 3);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+    if ($boolUseCookie && is_array($_COOKIE) && count($_COOKIE) > 0) {
+        $cookie_str = '';
+        foreach($_COOKIE as $key => $value) {
+            $cookie_str .= "$key=$value; ";
+        }
+        curl_setopt($ch, CURLOPT_COOKIE, $cookie_str);
+    }
+    $response = curl_exec($ch);
+    if (curl_errno($ch) != 0) {
+        return false;
+    }
+    curl_close($ch);
+    return $response;
+}
