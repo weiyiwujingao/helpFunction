@@ -74,7 +74,7 @@ function curl_get($url, $timeout = '30') {
  * @param integer $ishttp  是否使用https连接 0:否 1:是
  * @return array
  */
-function curl_post($strUrl, $arrData=array(), $boolUseCookie=false){
+function curlPost($strUrl, $arrData=array(), $boolUseCookie=false){
     $strData = array();
     foreach ($arrData as $k => $v) {
         $strData[] = "$k=$v";
